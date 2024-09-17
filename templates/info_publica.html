@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="hero info-hero">
+    <h1>Información Pública del Clan</h1>
+    <p class="subtitle">Conoce más sobre el Clan Martillo de Thor</p>
+</div>
+
+<div class="info-content">
+    <div class="info-list">
+        {% for key, value in info.items() %}
+        <div class="info-item">
+            <h3>{{ key|capitalize }}</h3>
+            <p>{{ value }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="cta">
+    <a href="/" class="btn btn-primary">Volver al inicio</a>
+    <a href="{{ url_for('login_page') }}" class="btn btn-primary">Área de miembros</a>
+</div>
+{% endblock %}

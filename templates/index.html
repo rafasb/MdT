@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="hero">
+    <h1>Clan Martillo de Thor  v.T&L</h1>
+    <p class="subtitle">Tu destino en Throne & Liberty</p>
+</div>
+
+<div class="features">
+    <div class="feature">
+        <h3>Únete a la aventura</h3>
+        <p>Explora el vasto mundo de Throne & Liberty con compañeros leales.</p>
+    </div>
+    <div class="feature">
+        <h3>Crece con nosotros</h3>
+        <p>Mejora tus habilidades y equipo en un ambiente de apoyo mutuo.</p>
+    </div>
+    <div class="feature">
+        <h3>Conquista juntos</h3>
+        <p>Participa en emocionantes batallas PvE y PvP con estrategias de equipo.</p>
+    </div>
+</div>
+
+<div class="cta">
+    <a href="{{ url_for('info_publica') }}" class="btn btn-primary">Más información</a>
+    <a href="{{ url_for('login_page') }}" class="btn btn-primary">Área de miembros</a>
+</div>
+{% endblock %}
