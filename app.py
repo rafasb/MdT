@@ -96,7 +96,7 @@ async def login_page(request: Request):
     return templates.TemplateResponse("login.html", {"request": request})
 
 @app.post("/login")
-async def login(request: Request, username: str = Form(...), password: str = Form(...)):
+async def authlogin(request: Request, username: str = Form(...), password: str = Form(...)):
     user_dict = fake_users_db.get(username)
     if not user_dict:
         return templates.TemplateResponse("login.html", {"request": request, "error": "Usuario incorrecto"})
