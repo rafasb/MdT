@@ -36,3 +36,12 @@ services:
     depends_on:
       - mongodb
 
+  init-db:
+    build: .
+    command: python init_db.py
+    environment:
+      - PYTHONUNBUFFERED=1
+      - MONGODB_URL=mongodb://admin:adminpassword@mongodb:27017/martillo_de_thor?authSource=admin
+    depends_on:
+      - mongodb
+

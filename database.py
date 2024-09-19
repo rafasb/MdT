@@ -22,3 +22,7 @@ async def get_user(username: str):
 async def create_user(user_data: dict):
     result = await Database.db.users.insert_one(user_data)
     return str(result.inserted_id)
+
+async def delete_user(username: str):
+    result = await Database.db.users.delete_one({"username": username})
+    return result.deleted_count
