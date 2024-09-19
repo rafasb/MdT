@@ -265,30 +265,36 @@ h1, h2, h3 {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 2rem;
+    padding: 2rem 1rem; /* Ajustado para ser consistente con otros contenedores */
 }
 
 .member-area-content {
     background-color: rgba(0, 0, 0, 0.7);
-    padding: 1rem;
+    padding: 2rem;
     border-radius: 10px;
     backdrop-filter: blur(5px);
     -webkit-backdrop-filter: blur(5px);
-    width: 90%;
-    max-width: 600px;
+    width: 100%;
+    max-width: 800px; /* Aumentado para ser consistente con .info-list */
     text-align: center;
+    margin: 0 auto; /* Centrar el contenido */
 }
 
 .member-area-content h1 {
-    font-size: 2.5rem;
+    font-size: 2rem;
     color: #ffffff;
     text-shadow: 2px 2px 4px rgba(242, 255, 0, 0.973);
     margin-bottom: 1.5rem;
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
 }
 
 .member-area-content p {
     color: #ffffff;
     margin-bottom: 1rem;
+    font-size: 1rem;
 }
 
 /* Media queries para ajustes específicos */
@@ -313,6 +319,14 @@ h1, h2, h3 {
     .btn {
         width: auto;
         margin: 0 1rem;
+    }
+
+    .member-area-content h1 {
+        font-size: 2.5rem;
+    }
+
+    .member-area-content p {
+        font-size: 1.1rem;
     }
 }
 
