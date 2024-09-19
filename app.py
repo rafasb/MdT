@@ -19,6 +19,9 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="Martillo de Thor - Clan de Throne & Liberty", lifespan=lifespan)
 
+# Añade esta línea para montar los archivos estáticos
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
 # Simulación de base de datos de usuarios
 fake_users_db = {
     "thor": {
