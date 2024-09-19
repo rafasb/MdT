@@ -8,11 +8,16 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from pydantic import BaseModel
 from typing import Optional
 import uvicorn
+from database import connect_to_mongo, close_mongo_connection, get_user, create_user
+from contextlib import asynccontextmanager
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await connect_to_mongo()
+    yield
+    await close_mongo_connection()
 
-app = FastAPI(title="Martillo de Thor - Clan de Throne & Liberty")
-
-app.mount("/static", StaticFiles(directory="static"), name="static")
+app = FastAPI(title="Martillo de Thor - Clan de Throne & Liberty", lifespan=lifespan)
 
 # Simulación de base de datos de usuarios
 fake_users_db = {
@@ -36,10 +41,8 @@ class UserInDB(User):
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-def get_user(db, username: str):
-    if username in db:
-        user_dict = db[username]
-        return UserInDB(**user_dict)
+# Reemplaza las llamadas a get_user con la versión de database.py
+from database import get_user
 
 def fake_decode_token(token):
     return User(
@@ -58,13 +61,12 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
 
 @app.post("/token")
 async def login(form_data: OAuth2PasswordRequestForm = Depends()):
-    user_dict = fake_users_db.get(form_data.username)
-    if not user_dict:
+    user = await get_user(form_data.username)
+    if not user:
         raise HTTPException(status_code=400, detail="Nombre de usuario incorrecto")
-    user = UserInDB(**user_dict)
-    if form_data.password != user.hashed_password:
+    if form_data.password != user['hashed_password']:
         raise HTTPException(status_code=400, detail="Contraseña incorrecta")
-    return {"access_token": user.username, "token_type": "bearer"}
+    return {"access_token": user['username'], "token_type": "bearer"}
 
 @app.get("/")
 async def root(request: Request):
@@ -86,7 +88,7 @@ async def area_miembros(request: Request):
     if not token or not token.startswith("bearer "):
         return RedirectResponse(url="/login")
     username = token.split()[1]
-    user = fake_users_db.get(username)
+    user = await get_user(username)
     if not user:
         return RedirectResponse(url="/login")
     return templates.TemplateResponse("area_miembros.html", {"request": request, "user": user})
@@ -97,14 +99,13 @@ async def login_page(request: Request):
 
 @app.post("/login")
 async def authlogin(request: Request, username: str = Form(...), password: str = Form(...)):
-    user_dict = fake_users_db.get(username)
-    if not user_dict:
+    user = await get_user(username)
+    if not user:
         return templates.TemplateResponse("login.html", {"request": request, "error": "Usuario incorrecto"})
-    user = UserInDB(**user_dict)
-    if password != user.hashed_password:
+    if password != user['hashed_password']:
         return templates.TemplateResponse("login.html", {"request": request, "error": "Contraseña incorrecta"})
     response = RedirectResponse(url="/area-miembros", status_code=status.HTTP_302_FOUND)
-    response.set_cookie(key="access_token", value=f"bearer {user.username}", httponly=True)
+    response.set_cookie(key="access_token", value=f"bearer {user['username']}", httponly=True)
     return response
 
 @app.get("/logout")

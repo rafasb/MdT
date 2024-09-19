@@ -9,3 +9,30 @@ services:
       - .:/app
     environment:
       - PYTHONUNBUFFERED=1
+      - MONGODB_URL=mongodb://admin:adminpassword@mongodb:27017/martillo_de_thor?authSource=admin
+    depends_on:
+      - mongodb
+
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./data/mongodb:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=adminpassword
+
+  mongo-express:
+    image: mongo-express:latest
+    ports:
+      - "8081:8081"
+    environment:
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=admin
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=adminpassword
+      - ME_CONFIG_MONGODB_SERVER=mongodb
+      - ME_CONFIG_BASICAUTH_USERNAME=usuario_express
+      - ME_CONFIG_BASICAUTH_PASSWORD=contraseña_segura
+    depends_on:
+      - mongodb
+

@@ -8,3 +8,6 @@ El juego del clan se orientará inicialmente al tipo PvE, hasta que los miembros
 
 Lo más importante para el clan es que todos los miembros se diviertan, sin excesivos compromisos, salvo el de apoyar al resto de miembros del grupo a progresar y a alcanzar los objetivos del clan en el juego.
 
+## Inicialización de la base de datos
+
+docker compose run web python init_db.py
