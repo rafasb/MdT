@@ -17,9 +17,12 @@ async def get_user(username: str):
     user = await Database.db.users.find_one({"username": username})
     if user:
         user['_id'] = str(user['_id'])
+        user['role'] = user.get('role', 'Usuario')  # Valor predeterminado si no existe
     return user
 
 async def create_user(user_data: dict):
+    if 'role' not in user_data:
+        user_data['role'] = 'Usuario'  # Rol predeterminado
     result = await Database.db.users.insert_one(user_data)
     return str(result.inserted_id)
 

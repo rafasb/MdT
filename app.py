@@ -38,6 +38,7 @@ class User(BaseModel):
     email: Optional[str] = None
     full_name: Optional[str] = None
     disabled: Optional[bool] = None
+    role: str = 'Usuario'
 
 class UserInDB(User):
     hashed_password: str
@@ -48,8 +49,12 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 from database import get_user
 
 def fake_decode_token(token):
+    user = get_user(token + "fakedecoded")
     return User(
-        username=token + "fakedecoded", email="john@example.com", full_name="John Doe"
+        username=user['username'],
+        email=user['email'],
+        full_name=user['full_name'],
+        role=user['role']
     )
 
 async def get_current_user(token: str = Depends(oauth2_scheme)):
@@ -118,6 +123,17 @@ async def logout(request: Request):
     return response
 
 templates = Jinja2Templates(directory="templates")
+
+def role_required(allowed_roles: list):
+    async def check_role(current_user: User = Depends(get_current_user)):
+        if current_user.role not in allowed_roles:
+            raise HTTPException(status_code=403, detail="No tienes permiso para acceder a esta página")
+        return current_user
+    return check_role
+
+@app.get("/admin-area")
+async def admin_area(user: User = Depends(role_required(['Admin']))):
+    return {"message": "Bienvenido al área de administración"}
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
