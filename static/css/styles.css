@@ -1,7 +1,24 @@
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Open+Sans&display=swap');
 
+/* Agrupar estilos comunes */
+.hero h1, .subtitle, .login-container h1 {
+    color: #ffffff;
+    text-shadow: 2px 2px 4px rgba(242, 255, 0, 0.973);
+    background-color: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+}
+
+/* Usar variables CSS para colores y fuentes repetidos */
+:root {
+    --primary-color: #ffd700;
+    --bg-dark: rgba(0, 0, 0, 0.7);
+    --font-title: 'Cinzel', serif;
+    --font-body: 'Open Sans', sans-serif;
+}
+
 body {
-    font-family: 'Open Sans', sans-serif;
+    font-family: var(--font-body);
     line-height: 1.6;
     margin: 0;
     padding: 0;
@@ -52,7 +69,7 @@ footer {
 }
 
 h1, h2, h3 {
-    font-family: 'Cinzel', serif;
+    font-family: var(--font-title);
     text-transform: uppercase;
 }
 
@@ -77,7 +94,7 @@ h1, h2, h3 {
     -webkit-backdrop-filter: blur(5px); /* Para soporte en Safari */
 }
 
-.features, .cta, .info-content {
+.features, .cta, .info-content, .login-container, .member-area-container {
     background-image: url('/static/images/throne-liberty-bg.jpg');
     background-size: cover;
     background-position: center;
@@ -96,7 +113,7 @@ h1, h2, h3 {
     text-align: center;
     padding: 1.5rem;
     margin: 1rem 0;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: var(--bg-dark);
     border-radius: 10px;
     backdrop-filter: blur(5px);
     -webkit-backdrop-filter: blur(5px);
@@ -133,7 +150,7 @@ h1, h2, h3 {
 }
 
 .info-item {
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: var(--bg-dark);
     border-radius: 10px;
     padding: 1.5rem;
     margin-bottom: 1.5rem;
@@ -184,7 +201,7 @@ h1, h2, h3 {
 }
 
 .info-item {
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: var(--bg-dark);
     border-radius: 10px;
     padding: 1.5rem;
     margin-bottom: 1.5rem;
@@ -227,7 +244,7 @@ h1, h2, h3 {
 }
 
 .login-form {
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: var(--bg-dark);
     padding: 2rem;
     border-radius: 10px;
     backdrop-filter: blur(5px);
@@ -272,7 +289,7 @@ h1, h2, h3 {
 }
 
 .member-area-content {
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: var(--bg-dark);
     padding: 2rem;
     border-radius: 10px;
     backdrop-filter: blur(5px);
@@ -296,33 +313,20 @@ h1, h2, h3 {
 
 /* Media queries para ajustes específicos */
 @media (min-width: 768px) {
-    .hero h1 {
-        font-size: 3.5rem;
-    }
-
-    .subtitle {
-        font-size: 1.5rem;
-    }
-
-    .features {
-        flex-direction: row;
-    }
-
+    .hero h1 { font-size: 3.5rem; }
+    .subtitle { font-size: 1.5rem; }
+    .features { flex-direction: row; }
     .cta {
         flex-direction: row;
         justify-content: center;
     }
-
     .btn {
         width: auto;
         margin: 0 1rem;
     }
 }
 
-/* Añadir esta media query */
 @media (max-width: 767px) {
-    .login-container h1 {
-        font-size: 2rem; /* Reducir el tamaño de la fuente en móviles */
-    }
+    .login-container h1 { font-size: 2rem; }
 }
 
