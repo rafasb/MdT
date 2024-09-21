@@ -46,15 +46,16 @@ def fake_decode_token(token):
         role=user['role']
     )
 
-async def get_current_user(token: str = Depends(oauth2_scheme)):
-    user = fake_decode_token(token)
+# Optimización 1: Usar dependencias para la autenticación
+async def get_current_user(request: Request):
+    token = request.cookies.get("access_token")
+    if not token or not token.startswith("bearer "):
+        raise HTTPException(status_code=401, detail="No autenticado")
+    username = token.split()[1]
+    user = await get_user(username)
     if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid authentication credentials",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-    return User(username=user.username, email=user.email, full_name=user.full_name, role=user.role)
+        raise HTTPException(status_code=401, detail="Usuario no encontrado")
+    return User(**user)
 
 @app.post("/token")
 async def login(form_data: OAuth2PasswordRequestForm = Depends()):
@@ -79,16 +80,10 @@ async def info_publica(request: Request):
     }
     return templates.TemplateResponse("info_publica.html", {"request": request, "info": info})
 
+# Optimización 3: Usar la dependencia get_current_user en las rutas protegidas
 @app.get("/area-miembros")
-async def area_miembros(request: Request):
-    token = request.cookies.get("access_token")
-    if not token or not token.startswith("bearer "):
-        return RedirectResponse(url="/login")
-    username = token.split()[1]
-    user = await get_user(username)
-    if not user:
-        return RedirectResponse(url="/login")
-    return templates.TemplateResponse("area_miembros.html", {"request": request, "user": user})
+async def area_miembros(request: Request, current_user: User = Depends(get_current_user)):
+    return templates.TemplateResponse("area_miembros.html", {"request": request, "user": current_user})
 
 @app.get("/login")
 async def login_page(request: Request):
@@ -113,6 +108,7 @@ async def logout(request: Request):
 
 templates = Jinja2Templates(directory="templates")
 
+# Optimización 2: Simplificar el manejo de roles
 def role_required(allowed_roles: list):
     async def check_role(current_user: User = Depends(get_current_user)):
         if current_user.role not in allowed_roles:
@@ -126,43 +122,16 @@ async def test(request: Request):
     return {"message": "Hello World"}
 
 @app.get("/admin-area")
-async def admin_area(request: Request):
-    token = request.cookies.get("access_token")
-    if not token or not token.startswith("bearer "):
-        return RedirectResponse(url="/login")
-    username = token.split()[1]
-    user = await get_user(username)
-    if not user:
-        return RedirectResponse(url="/login")
-    if user['role'] != 'Admin':
-        raise HTTPException(status_code=403, detail="No tienes permiso para acceder a esta página")
-    return templates.TemplateResponse("admin_area.html", {"request": request, "user": user})
+async def admin_area(request: Request, current_user: User = Depends(role_required(["Admin"]))):
+    return templates.TemplateResponse("admin_area.html", {"request": request, "user": current_user})
 
 @app.get("/admin/create-user")
-async def create_user_page(request: Request):
-    token = request.cookies.get("access_token")
-    if not token or not token.startswith("bearer "):
-        return RedirectResponse(url="/login")
-    username = token.split()[1]
-    user = await get_user(username)
-    if not user:
-        return RedirectResponse(url="/login")
-    if user['role'] != 'Admin':
-        raise HTTPException(status_code=403, detail="No tienes permiso para acceder a esta página")
-    return templates.TemplateResponse("create_user.html", {"request": request, "user": user})
+async def create_user_page(request: Request, current_user: User = Depends(role_required(["Admin"]))):
+    return templates.TemplateResponse("create_user.html", {"request": request, "user": current_user})
 
 @app.get("/admin/edit-user")
-async def edit_user_page(request: Request):
-    token = request.cookies.get("access_token")
-    if not token or not token.startswith("bearer "):
-        return RedirectResponse(url="/login")
-    username = token.split()[1]
-    user = await get_user(username)
-    if not user:
-        return RedirectResponse(url="/login")
-    if user['role'] != 'Admin':
-        raise HTTPException(status_code=403, detail="No tienes permiso para acceder a esta página")
-    return templates.TemplateResponse("edit_user.html", {"request": request, "user": user})
+async def edit_user_page(request: Request, current_user: User = Depends(role_required(["Admin"]))):
+    return templates.TemplateResponse("edit_user.html", {"request": request, "user": current_user})
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8001)
