@@ -1,7 +1,7 @@
 import asyncio
 import os
 import argparse
-from database import connect_to_mongo, close_mongo_connection, create_user, get_user, delete_user
+from database import connect_to_mongo, close_mongo_connection, create_user_db, get_user, delete_user
 
 async def init_db(force=False):
     await connect_to_mongo()
@@ -21,9 +21,9 @@ async def init_db(force=False):
             "email": "thor@asgard.com",
             "hashed_password": "mjolnir123",
             "disabled": False,
-            "role": "Admin"  # Añade esta línea
+            "role": "Admin"
         }
-        user_id = await create_user(user_data)
+        user_id = await create_user_db(user_data)
         print(f"Usuario creado con ID: {user_id}")
     elif not force:
         print("El usuario 'thor' ya existe. No se creará un nuevo usuario.")

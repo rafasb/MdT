@@ -8,7 +8,7 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from pydantic import BaseModel
 from typing import Optional
 import uvicorn
-from database import connect_to_mongo, close_mongo_connection, get_user, create_user
+from database import connect_to_mongo, close_mongo_connection, get_user, create_user_db
 from contextlib import asynccontextmanager
 
 @asynccontextmanager
@@ -132,6 +132,50 @@ async def create_user_page(request: Request, current_user: User = Depends(role_r
 @app.get("/admin/edit-user")
 async def edit_user_page(request: Request, current_user: User = Depends(role_required(["Admin"]))):
     return templates.TemplateResponse("edit_user.html", {"request": request, "user": current_user})
+
+@app.post("/admin/create-user")
+async def create_user(
+    request: Request,
+    username: str = Form(...),
+    email: str = Form(...),
+    full_name: str = Form(...),
+    password: str = Form(...),
+    role: str = Form(...),
+    current_user: User = Depends(role_required(["Admin"]))
+):
+    # Primero, verificamos si el usuario ya existe
+    existing_user = await get_user(username)
+    if existing_user:
+        return templates.TemplateResponse("create_user.html", {
+            "request": request,
+            "user": current_user,
+            "error": f"El usuario '{username}' ya existe."
+        })
+
+    user_data = {
+        "username": username,
+        "email": email,
+        "full_name": full_name,
+        "hashed_password": password,  # Nota: En una aplicación real, deberías hashear la contraseña
+        "role": role,
+        "disabled": False
+    }
+    try:
+        user_id = await create_user_db(user_data)
+        if user_id:
+            return templates.TemplateResponse("create_user.html", {
+                "request": request,
+                "user": current_user,
+                "message": f"Usuario creado con éxito. ID: {user_id}"
+            })
+        else:
+            raise Exception("No se pudo crear el usuario")
+    except Exception as e:
+        return templates.TemplateResponse("create_user.html", {
+            "request": request,
+            "user": current_user,
+            "error": f"Error al crear el usuario: {str(e)}"
+        })
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8001)
