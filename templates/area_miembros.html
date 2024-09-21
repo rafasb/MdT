@@ -8,6 +8,11 @@
         <p>Tu nombre de usuario es: {{ user.username }}</p>
         <p>Tu correo electrónico es: {{ user.email }}</p>
         <p>Tu rol es: {{ user.role }}</p>
+        
+        {% if user.role == 'Admin' %}
+        <a href="{{ url_for('admin_area') }}" class="btn btn-primary">Área de Administración</a>
+        {% endif %}
+        
         <a href="{{ url_for('logout') }}" class="btn btn-secondary">Cerrar sesión</a>
     </div>
 </div>

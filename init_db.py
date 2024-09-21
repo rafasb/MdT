@@ -20,7 +20,8 @@ async def init_db(force=False):
             "full_name": "Thor Odinson",
             "email": "thor@asgard.com",
             "hashed_password": "mjolnir123",
-            "disabled": False
+            "disabled": False,
+            "role": "Admin"  # Añade esta línea
         }
         user_id = await create_user(user_data)
         print(f"Usuario creado con ID: {user_id}")

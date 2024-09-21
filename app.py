@@ -22,17 +22,6 @@ app = FastAPI(title="Martillo de Thor - Clan de Throne & Liberty", lifespan=life
 # Añade esta línea para montar los archivos estáticos
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-# Simulación de base de datos de usuarios
-fake_users_db = {
-    "thor": {
-        "username": "thor",
-        "full_name": "Thor Odinson",
-        "email": "thor@asgard.com",
-        "hashed_password": "mjolnir123",
-        "disabled": False,
-    }
-}
-
 class User(BaseModel):
     username: str
     email: Optional[str] = None
@@ -65,7 +54,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
             detail="Invalid authentication credentials",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    return user
+    return User(username=user.username, email=user.email, full_name=user.full_name, role=user.role)
 
 @app.post("/token")
 async def login(form_data: OAuth2PasswordRequestForm = Depends()):
@@ -131,9 +120,49 @@ def role_required(allowed_roles: list):
         return current_user
     return check_role
 
+@app.get("/test")
+async def test(request: Request):
+    print("Hello World")
+    return {"message": "Hello World"}
+
 @app.get("/admin-area")
-async def admin_area(user: User = Depends(role_required(['Admin']))):
-    return {"message": "Bienvenido al área de administración"}
+async def admin_area(request: Request):
+    token = request.cookies.get("access_token")
+    if not token or not token.startswith("bearer "):
+        return RedirectResponse(url="/login")
+    username = token.split()[1]
+    user = await get_user(username)
+    if not user:
+        return RedirectResponse(url="/login")
+    if user['role'] != 'Admin':
+        raise HTTPException(status_code=403, detail="No tienes permiso para acceder a esta página")
+    return templates.TemplateResponse("admin_area.html", {"request": request, "user": user})
+
+@app.get("/admin/create-user")
+async def create_user_page(request: Request):
+    token = request.cookies.get("access_token")
+    if not token or not token.startswith("bearer "):
+        return RedirectResponse(url="/login")
+    username = token.split()[1]
+    user = await get_user(username)
+    if not user:
+        return RedirectResponse(url="/login")
+    if user['role'] != 'Admin':
+        raise HTTPException(status_code=403, detail="No tienes permiso para acceder a esta página")
+    return templates.TemplateResponse("create_user.html", {"request": request, "user": user})
+
+@app.get("/admin/edit-user")
+async def edit_user_page(request: Request):
+    token = request.cookies.get("access_token")
+    if not token or not token.startswith("bearer "):
+        return RedirectResponse(url="/login")
+    username = token.split()[1]
+    user = await get_user(username)
+    if not user:
+        return RedirectResponse(url="/login")
+    if user['role'] != 'Admin':
+        raise HTTPException(status_code=403, detail="No tienes permiso para acceder a esta página")
+    return templates.TemplateResponse("edit_user.html", {"request": request, "user": user})
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=8001)

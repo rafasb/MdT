@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="admin-area-container">
+    <div class="admin-area-content">
+        <h1>Área de Administración</h1>
+        <p>Bienvenido, {{ user.full_name }}. Tu rol es: {{ user.role }}</p>
+        
+        <div class="admin-buttons">
+            <a href="{{ url_for('create_user_page') }}" class="btn btn-primary">Crear Usuario</a>
+            <a href="{{ url_for('edit_user_page') }}" class="btn btn-secondary">Editar Usuario</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
