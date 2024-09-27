@@ -6,18 +6,14 @@
     <p class="subtitle">Tu destino en Throne & Liberty</p>
 </div>
 
-<div class="features">
-    <div class="feature">
-        <h3>Únete a la aventura</h3>
-        <p>Explora el vasto mundo de Throne & Liberty con compañeros leales.</p>
-    </div>
-    <div class="feature">
-        <h3>Crece con nosotros</h3>
-        <p>Mejora tus habilidades y equipo en un ambiente de apoyo mutuo.</p>
-    </div>
-    <div class="feature">
-        <h3>Conquista juntos</h3>
-        <p>Participa en emocionantes batallas PvE y PvP con estrategias de equipo.</p>
+<div class="info-content">
+    <div class="info-list">
+        {% for key, value in info.items() %}
+        <div class="info-item">
+            <h3>{{ key|capitalize }}</h3>
+            <p>{{ value }}</p>
+        </div>
+        {% endfor %}
     </div>
 </div>
 

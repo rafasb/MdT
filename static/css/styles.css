@@ -1,13 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Open+Sans&display=swap');
 
-/* Agrupar estilos comunes */
-.hero h1, .subtitle, .login-container h1 {
-    color: #ffffff;
-    text-shadow: 2px 2px 4px rgba(242, 255, 0, 0.973);
-    background-color: rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
-}
+
 
 /* Usar variables CSS para colores y fuentes repetidos */
 :root {
@@ -15,6 +8,7 @@
     --bg-dark: rgba(0, 0, 0, 0.7);
     --font-title: 'Cinzel', serif;
     --font-body: 'Open Sans', sans-serif;
+    --t-shadow: rgba(242, 255, 0, 0.973);
 }
 
 body {
@@ -25,33 +19,6 @@ body {
     background-color: #1a1a1a;
     color: #f4f4f4;
     font-size: 16px;
-}
-
-header {
-    background-color: #333;
-    color: #fff;
-    text-align: center;
-    padding: 1rem;
-}
-
-nav a {
-    color: #fff;
-    text-decoration: none;
-    padding: 0.5rem;
-}
-
-main {
-    padding: 2rem;
-}
-
-footer {
-    background-color: #333;
-    color: #fff;
-    text-align: center;
-    padding: 1rem;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
 }
 
 .hero {
@@ -73,59 +40,30 @@ h1, h2, h3 {
     text-transform: uppercase;
 }
 
+.hero h1, .subtitle, .login-container h1 {
+    color: #ffffff;
+    text-shadow: 2px 2px 4px var(--t-shadow);
+    background-color: var(--bg-dark);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+}
+
 .hero h1 {
     font-size: 2.5rem;
     margin-bottom: 0.5rem;
-    color: #ffffff;
-    text-shadow: 2px 2px 4px rgba(242, 255, 0, 0.973); /* Sombra roja */
-    padding: 10px; /* Añadimos un poco de padding para que el blur no esté pegado al texto */
-    background-color: rgba(0, 0, 0, 0.3); /* Fondo semi-transparente para mejorar el efecto */
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px); /* Para soporte en Safari */
+    padding: 10px;
 }
 
 .subtitle {
     font-size: 1.2rem;
     margin-bottom: 2rem;
-    color: #ffffff;
-    text-shadow: 2px 2px 4px rgba(242, 255, 0, 0.973); /* Sombra roja */
-    background-color: rgba(0, 0, 0, 0.3); /* Fondo semi-transparente para mejorar el efecto */
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px); /* Para soporte en Safari */
 }
 
-.features, .cta, .info-content, .login-container, .member-area-container {
+.cta, .info-content, .login-container, .member-area-container, .admin-area-container {
     background-image: url('/static/images/throne-liberty-bg.jpg');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
-}
-
-.features {
-    flex-direction: column;
-    display: flex;
-    justify-content: space-around;
-    padding: 2rem 1rem;
-}
-
-.feature {
-    flex: 1;
-    text-align: center;
-    padding: 1.5rem;
-    margin: 1rem 0;
-    background-color: var(--bg-dark);
-    border-radius: 10px;
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
-}
-
-.feature h3 {
-    color: #ffd700;
-    margin-bottom: 1rem;
-}
-
-.feature p {
-    color: #ffffff;
 }
 
 .cta {
@@ -149,29 +87,13 @@ h1, h2, h3 {
     padding: 2rem;
 }
 
-.info-item {
-    background-color: var(--bg-dark);
-    border-radius: 10px;
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-}
-
-.info-item h3 {
-    color: #ffd700;
-    margin-bottom: 0.5rem;
-}
-
-.info-item p {
-    margin: 0;
-}
-
 .btn {
     display: inline-block;
     padding: 0.8rem 1.5rem;
     margin: 0.5rem 0;
     width: 100%;
     max-width: 300px;
-    font-family: 'Cinzel', serif;
+    font-family: var(--font-title);
     font-size: 1.1rem;
     text-decoration: none;
     text-transform: uppercase;
@@ -180,24 +102,19 @@ h1, h2, h3 {
 }
 
 .btn-primary {
-    background-color: #ffd700;
+    background-color: var(--primary-color);
     color: #1a1a1a;
 }
 
 .btn-secondary {
     background-color: transparent;
-    color: #ffd700;
-    border: 2px solid #ffd700;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
 }
 
 .btn:hover {
     transform: translateY(-3px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-}
-
-.info-hero {
-    height: 50vh;
-    background-image: url('/static/images/thor-hammer-bg.jpg');
+    box-shadow: 0 4px 8px var(--bg-dark);
 }
 
 .info-item {
@@ -208,7 +125,7 @@ h1, h2, h3 {
 }
 
 .info-item h3 {
-    color: #ffd700;
+    color: var(--primary-color);
     margin-bottom: 0.5rem;
 }
 
@@ -216,26 +133,21 @@ h1, h2, h3 {
     margin: 0;
 }
 
-.login-container {
-    background-image: url('/static/images/throne-liberty-bg.jpg');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
+.login-container, .member-area-container, .admin-area-container {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     padding: 2rem;
-    text-align: center; /* Añadir esta línea */
 }
 
 .login-container h1 {
     font-size: 3rem;
     color: #ffffff;
-    text-shadow: 2px 2px 4px rgba(242, 255, 0, 0.973);
+    text-shadow: 2px 2px 4px var(--t-shadow);
     padding: 10px;
-    background-color: rgba(0, 0, 0, 0.3);
+    background-color: var(--bg-dark);
     backdrop-filter: blur(5px);
     -webkit-backdrop-filter: blur(5px);
     margin-bottom: 2rem;
@@ -267,25 +179,12 @@ h1, h2, h3 {
     color: #ff4136;
     text-align: center;
     margin-top: 1rem;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: var(--bg-dark);
     border: 2px solid #ff4136;
     border-radius: 5px;
     padding: 10px;
     backdrop-filter: blur(5px);
     -webkit-backdrop-filter: blur(5px);
-}
-
-.member-area-container {
-    background-image: url('/static/images/throne-liberty-bg.jpg');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 2rem 1rem; /* Ajustado para ser consistente con otros contenedores */
 }
 
 .member-area-content {
@@ -302,7 +201,7 @@ h1, h2, h3 {
 .member-area-content h1 {
     font-size: 2.5rem;
     color: #ffffff;
-    text-shadow: 2px 2px 4px rgba(242, 255, 0, 0.973);
+    text-shadow: 2px 2px 4px var(--t-shadow);
     margin-bottom: 1.5rem;
 }
 
@@ -315,7 +214,6 @@ h1, h2, h3 {
 @media (min-width: 768px) {
     .hero h1 { font-size: 3.5rem; }
     .subtitle { font-size: 1.5rem; }
-    .features { flex-direction: row; }
     .cta {
         flex-direction: row;
         justify-content: center;
@@ -357,7 +255,7 @@ h1, h2, h3 {
 .admin-area-content h1 {
     font-size: 2.5rem;
     color: #ffffff;
-    text-shadow: 2px 2px 4px rgba(242, 255, 0, 0.973);
+    text-shadow: 2px 2px 4px var(--t-shadow);
     margin-bottom: 1.5rem;
 }
 

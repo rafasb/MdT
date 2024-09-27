@@ -68,7 +68,12 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
 
 @app.get("/")
 async def root(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+    info = {
+        "Únete a la aventura": "Explora el vasto mundo de Throne & Liberty con compañeros leales.",
+        "Crece con nosotros": "Mejora tus habilidades y equipo en un ambiente de apoyo mutuo.",
+        "Conquista juntos": "Participa en emocionantes batallas PvE y PvP con estrategias de equipo."
+    }
+    return templates.TemplateResponse("index.html", {"request": request, "info": info})
 
 @app.get("/info-publica")
 async def info_publica(request: Request):
